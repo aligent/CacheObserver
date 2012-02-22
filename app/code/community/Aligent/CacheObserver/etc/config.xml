@@ -33,4 +33,14 @@
             </cacheobserver>
         </models>
     </global>
+    <default>
+        <system>
+            <cacheobserver>
+                <enable_cms_pages>1</enable_cms_pages>
+                <enable_cms_blocks>1</enable_cms_blocks>
+                <enable_category_view>1</enable_category_view>
+                <enable_product_view>1</enable_product_view>
+            </cacheobserver>
+        </system>
+    </default>
 </config>
