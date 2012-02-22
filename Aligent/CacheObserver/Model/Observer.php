@@ -27,8 +27,9 @@ class Aligent_CacheObserver_Model_Observer{
                                $block->getPage()->getIdentifier()));
             } elseif (('Mage_Catalog_Block_Product_View' == $class)) {
                 $oProduct = Mage::registry('product');
+                $vAlias = $block->getNameInLayout();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'product_page_' . $oProduct->getId().(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId());
+                $block->setData('cache_key', 'product_page_' . $oProduct->getId().(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId().'_'.$vAlias);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
                                 $oProduct->getId()));
             } elseif (('Mage_Catalog_Block_Category_View' == $class)) {
