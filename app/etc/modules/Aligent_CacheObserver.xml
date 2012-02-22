@@ -11,7 +11,7 @@
     <modules>
         <Aligent_CacheObserver>
             <active>true</active>
-            <codePool>local</codePool>
+            <codePool>community</codePool>
         </Aligent_CacheObserver>
     </modules>
 </config> 
