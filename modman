@@ -1,0 +1,3 @@
+# Aligent_CacheObserver module definition.
+app/code/community/Aligent/CacheObserver app/code/community/Aligent/CacheObserver
+app/etc/modules/Aligent_CacheObserver.xml app/etc/modules/Aligent_CacheObserver.xml
