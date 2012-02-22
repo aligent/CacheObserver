@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+ * @category   Aligent
+ * @package    Aligent_CacheObserver
+ * @author     ModuleCreator
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+ -->
+<config>
+    <modules>
+        <Aligent_CacheObserver>
+            <version>0.1.0</version>
+        </Aligent_CacheObserver>
+    </modules>
+    <global>
+        <events>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <cacheobserver>
+                        <type>singleton</type>
+                        <class>cacheobserver/observer</class>
+                        <method>customBlockCache</method>
+                    </cacheobserver>
+                </observers>
+            </core_block_abstract_to_html_before>
+        </events>
+    
+        <models>
+            <cacheobserver>
+                <class>Aligent_CacheObserver_Model</class>
+<!--                <resourceModel>cacheobserver_mysql4</resourceModel>  -->
+            </cacheobserver>
+        </models>
+    </global>
+</config>
