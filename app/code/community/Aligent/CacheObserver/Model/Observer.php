@@ -11,6 +11,7 @@ class Aligent_CacheObserver_Model_Observer{
     const ENABLE_CMS_BLOCKS = 'system/cacheobserver/enable_cms_blocks';
     const ENABLE_CMS_PAGES = 'system/cacheobserver/enable_cms_pages';
     const ENABLE_CATEGORY_VIEW = 'system/cacheobserver/enable_category_view';
+    const ENABLE_LAYER_VIEW = 'system/cacheobserver/enable_layer_view';
     const ENABLE_PRODUCT_VIEW = 'system/cacheobserver/enable_product_view';
     
     
@@ -49,9 +50,15 @@ class Aligent_CacheObserver_Model_Observer{
                                 $oProduct->getId()));
                 
             } elseif (('Mage_Catalog_Block_Category_View' == $class && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW))) {
-                $sCachekey = $this->_generateCategoryCacheKey($observer);
+                $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'catalog_category_page_' . $sCachekey);
+                $block->setData('cache_key', 'catalog_category_view_' . $sCachekey);
+                $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
+                                $sCachekey));
+            } elseif (('Mage_Catalog_Block_Layer_View' == $class && Mage::getStoreConfig(self::ENABLE_LAYER_VIEW))) {
+                $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_layered_nav_view');
+                $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
+                $block->setData('cache_key', 'catalog_category_layered_nav_view_' . $sCachekey);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
                                 $sCachekey));
                 
@@ -65,7 +72,7 @@ class Aligent_CacheObserver_Model_Observer{
         }
     }
     
-    private function _generateCategoryCacheKey(Varien_Event_Observer $observer) {
+    private function _generateCategoryCacheKey(Varien_Event_Observer $observer, $sKey) {
         
         $catId = Mage::app()->getRequest()->getParam('id');
         $params = Mage::app()->getRequest()->getParams();
@@ -82,7 +89,7 @@ class Aligent_CacheObserver_Model_Observer{
                 $filters .= "_" . $key . ":" . $value;
         }
         $sTemplate = $observer->getBlock()->getTemplate();
-        $cacheKey = "store_" . Mage::app()->getStore()->getId() . "_catalog_category_view_id_" . $catId . $filters . $sTemplate . '_' . Mage::app()->getStore()->getCurrentCurrencyCode() . '_' . $logged;
+        $cacheKey = "store_" . Mage::app()->getStore()->getId() . "_{$sKey}_id_" . $catId .'_'.$filters.'_'.$sTemplate . '_' . Mage::app()->getStore()->getCurrentCurrencyCode() . '_' . $logged;
         $cacheKey = md5($cacheKey);
         return $cacheKey;
     }
