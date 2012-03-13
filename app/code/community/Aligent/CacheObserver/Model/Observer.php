@@ -44,7 +44,7 @@ class Aligent_CacheObserver_Model_Observer{
                 $oProduct = Mage::registry('product');
                 $vAlias = $block->getNameInLayout();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'catalog_product_page_' . $oProduct->getId().(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId().'_'.$vAlias);
+                $block->setData('cache_key', 'catalog_product_page_' . $oProduct->getId().(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
                                 $oProduct->getId()));
                 
