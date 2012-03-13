@@ -26,20 +26,19 @@ class Aligent_CacheObserver_Model_Observer{
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $key = 'cms_block_' . $block->getBlockId() . '_store_' . Mage::app()->getStore()->getId();
                 if(Mage::app()->getStore()->isCurrentlySecure()){
-                    $key = "SECURE_" . $key;
+                    $key = "secure_" . $key;
                 }
                 $block->setData('cache_key', $key);
-                $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG, $block->getBlockId()));
+                $block->setData('cache_tags', array(Mage_Cms_Model_Block::CACHE_TAG . "_" . $block->getBlockId()));
                 
             } elseif (('Mage_Cms_Block_Page' == $class) && $block->getPage()->getIdentifier() && Mage::getStoreConfig(self::ENABLE_CMS_PAGES)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $key = 'cms_page_' . $block->getPage()->getIdentifier() . '_store_' . Mage::app()->getStore()->getId();
                 if(Mage::app()->getStore()->isCurrentlySecure()){
-                    $key = "SECURE_" . $key;
+                    $key = "secure_" . $key;
                 }
                 $block->setData('cache_key', $key);
-                $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
-                               $block->getPage()->getIdentifier()));
+                $block->setData('cache_tags', array(Mage_Cms_Model_Page::CACHE_TAG.'_'.$block->getPage()->getId()));
             
             } elseif (('Mage_Catalog_Block_Product_View' == $class && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW))) {
                 $oProduct = Mage::registry('product');
@@ -87,4 +86,5 @@ class Aligent_CacheObserver_Model_Observer{
         $cacheKey = md5($cacheKey);
         return $cacheKey;
     }
+    
 }
