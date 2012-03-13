@@ -24,12 +24,20 @@ class Aligent_CacheObserver_Model_Observer{
             $class = get_class($block);
             if (('Mage_Cms_Block_Block' == $class) && $block->getBlockId() && Mage::getStoreConfig(self::ENABLE_CMS_BLOCKS)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'cms_block_' . $block->getBlockId() . '_store_' . Mage::app()->getStore()->getId());
+                $key = 'cms_block_' . $block->getBlockId() . '_store_' . Mage::app()->getStore()->getId();
+                if(Mage::app()->getStore()->isCurrentlySecure()){
+                    $key = "SECURE_" . $key;
+                }
+                $block->setData('cache_key', $key);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG, $block->getBlockId()));
                 
             } elseif (('Mage_Cms_Block_Page' == $class) && $block->getPage()->getIdentifier() && Mage::getStoreConfig(self::ENABLE_CMS_PAGES)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'cms_page_' . $block->getPage()->getIdentifier() . '_store_' . Mage::app()->getStore()->getId());
+                $key = 'cms_page_' . $block->getPage()->getIdentifier() . '_store_' . Mage::app()->getStore()->getId();
+                if(Mage::app()->getStore()->isCurrentlySecure()){
+                    $key = "SECURE_" . $key;
+                }
+                $block->setData('cache_key', $key);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
                                $block->getPage()->getIdentifier()));
             
