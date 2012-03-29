@@ -61,7 +61,10 @@ class Aligent_CacheObserver_Model_Observer{
                 $block->setData('cache_key', 'catalog_category_layered_nav_view_' . $sCachekey);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
                                 $sCachekey));
-                
+            } elseif ('Mage_Page_Block_Html_Footer' == $class) {
+                $aCacheKeyInfo = $block->getCacheKeyInfo();
+                $aCacheKeyInfo[] = $block->getTemplate();
+                $block->setCacheKey(implode('_', array_values($aCacheKeyInfo)));
             } elseif (in_array($class, $this->cacheableBlocks)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $block->setData('cache_key', 'block_' . $class . '_store_' . Mage::app()->getStore()->getId());
