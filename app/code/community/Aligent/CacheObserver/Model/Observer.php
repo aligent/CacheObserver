@@ -42,12 +42,12 @@ class Aligent_CacheObserver_Model_Observer{
                 $block->setData('cache_tags', array(Mage_Cms_Model_Page::CACHE_TAG.'_'.$block->getPage()->getId()));
             
             } elseif (('Mage_Catalog_Block_Product_View' == $class && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW))) {
-                $oProduct = Mage::registry('product');
+                $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
                 $vAlias = $block->getNameInLayout();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'catalog_product_page_' . $oProduct->getId().(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
+                $block->setData('cache_key', 'catalog_product_page_' . $iProductId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
-                                $oProduct->getId()));
+                                $iProductId));
                 
             } elseif (('Mage_Catalog_Block_Category_View' == $class && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW))) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
