@@ -23,7 +23,7 @@ class Aligent_CacheObserver_Model_Observer{
             $event = $observer->getEvent();
             $block = $event->getBlock();
             $class = get_class($block);
-            if (('Mage_Cms_Block_Block' == $class) && $block->getBlockId() && Mage::getStoreConfig(self::ENABLE_CMS_BLOCKS)) {
+            if ($block instanceof Mage_Cms_Block_Block && $block->getBlockId() && Mage::getStoreConfig(self::ENABLE_CMS_BLOCKS)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $key = 'cms_block_' . $block->getBlockId() . '_store_' . Mage::app()->getStore()->getId();
                 if(Mage::app()->getStore()->isCurrentlySecure()){
@@ -32,7 +32,7 @@ class Aligent_CacheObserver_Model_Observer{
                 $block->setData('cache_key', $key);
                 $block->setData('cache_tags', array(Mage_Cms_Model_Block::CACHE_TAG . "_" . $block->getBlockId()));
                 
-            } elseif (('Mage_Cms_Block_Page' == $class) && $block->getPage()->getIdentifier() && Mage::getStoreConfig(self::ENABLE_CMS_PAGES)) {
+            } elseif ($block instanceof Mage_Cms_Block_Page && $block->getPage()->getIdentifier() && Mage::getStoreConfig(self::ENABLE_CMS_PAGES)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $key = 'cms_page_' . $block->getPage()->getIdentifier() . '_store_' . Mage::app()->getStore()->getId();
                 if(Mage::app()->getStore()->isCurrentlySecure()){
@@ -41,27 +41,26 @@ class Aligent_CacheObserver_Model_Observer{
                 $block->setData('cache_key', $key);
                 $block->setData('cache_tags', array(Mage_Cms_Model_Page::CACHE_TAG.'_'.$block->getPage()->getId()));
             
-            } elseif (('Mage_Catalog_Block_Product_View' == $class && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW))) {
+            } elseif ($block instanceof Mage_Catalog_Block_Product_View && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
                 $vAlias = $block->getNameInLayout();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $block->setData('cache_key', 'catalog_product_page_' . $iProductId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
                                 $iProductId));
-                
-            } elseif (('Mage_Catalog_Block_Category_View' == $class && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW))) {
+            } elseif ($block instanceof Mage_Catalog_Block_Category_View && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW)) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $block->setData('cache_key', 'catalog_category_view_' . $sCachekey);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
                                 $sCachekey));
-            } elseif (('Mage_Catalog_Block_Layer_View' == $class && Mage::getStoreConfig(self::ENABLE_LAYER_VIEW))) {
+            } elseif ($block instanceof Mage_Catalog_Block_Layer_View && Mage::getStoreConfig(self::ENABLE_LAYER_VIEW)) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_layered_nav_view');
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $block->setData('cache_key', 'catalog_category_layered_nav_view_' . $sCachekey);
                 $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
                                 $sCachekey));
-            } elseif ('Mage_Page_Block_Html_Footer' == $class) {
+            } elseif ($block instanceof Mage_Page_Block_Html_Footer) {
                 $aCacheKeyInfo = $block->getCacheKeyInfo();
                 $aCacheKeyInfo[] = $block->getTemplate();
                 $block->setCacheKey(implode('_', array_values($aCacheKeyInfo)));
