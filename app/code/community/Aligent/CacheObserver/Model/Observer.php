@@ -30,7 +30,7 @@ class Aligent_CacheObserver_Model_Observer{
                     $key = "secure_" . $key;
                 }
                 $block->setData('cache_key', $key);
-                $block->setData('cache_tags', array(Mage_Cms_Model_Block::CACHE_TAG . "_" . $block->getBlockId()));
+                $block->setData('cache_tags', array('BLOCK_HTML', Mage_Cms_Model_Block::CACHE_TAG . "_" . $block->getBlockId()));
                 
             } elseif (('Mage_Cms_Block_Page' == $class) && $block->getPage()->getIdentifier() && Mage::getStoreConfig(self::ENABLE_CMS_PAGES)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
@@ -39,27 +39,27 @@ class Aligent_CacheObserver_Model_Observer{
                     $key = "secure_" . $key;
                 }
                 $block->setData('cache_key', $key);
-                $block->setData('cache_tags', array(Mage_Cms_Model_Page::CACHE_TAG.'_'.$block->getPage()->getId()));
+                $block->setData('cache_tags', array('BLOCK_HTML', Mage_Cms_Model_Page::CACHE_TAG.'_'.$block->getPage()->getId()));
             
             } elseif (('Mage_Catalog_Block_Product_View' == $class && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW))) {
                 $oProduct = Mage::registry('product');
                 $vAlias = $block->getNameInLayout();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $block->setData('cache_key', 'catalog_product_page_' . $oProduct->getId().(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
-                $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
+                $block->setData('cache_tags', array('BLOCK_HTML', Mage_Core_Model_Store::CACHE_TAG,
                                 $oProduct->getId()));
                 
             } elseif (('Mage_Catalog_Block_Category_View' == $class && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW))) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $block->setData('cache_key', 'catalog_category_view_' . $sCachekey);
-                $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
+                $block->setData('cache_tags', array('BLOCK_HTML', Mage_Core_Model_Store::CACHE_TAG,
                                 $sCachekey));
             } elseif (('Mage_Catalog_Block_Layer_View' == $class && Mage::getStoreConfig(self::ENABLE_LAYER_VIEW))) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_layered_nav_view');
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $block->setData('cache_key', 'catalog_category_layered_nav_view_' . $sCachekey);
-                $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG,
+                $block->setData('cache_tags', array('BLOCK_HTML', Mage_Core_Model_Store::CACHE_TAG,
                                 $sCachekey));
             } elseif ('Mage_Page_Block_Html_Footer' == $class) {
                 $aCacheKeyInfo = $block->getCacheKeyInfo();
@@ -68,7 +68,7 @@ class Aligent_CacheObserver_Model_Observer{
             } elseif (in_array($class, $this->cacheableBlocks)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $block->setData('cache_key', 'block_' . $class . '_store_' . Mage::app()->getStore()->getId());
-                $block->setData('cache_tags', array(Mage_Core_Model_Store::CACHE_TAG, $class));
+                $block->setData('cache_tags', array('BLOCK_HTML', Mage_Core_Model_Store::CACHE_TAG, $class));
             }
         } catch (Exception $e) {
             Mage::logException(e);
