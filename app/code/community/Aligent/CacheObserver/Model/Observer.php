@@ -5,8 +5,8 @@
  * themselves.  Based on code from www.jewelsboutique.com/news/systems/magento-performance-optimization-continued-custom-block-cache-in-magento.htmlcd app
  */
 class Aligent_CacheObserver_Model_Observer{
-    // You can make this to be configurable at Admin Panel
-    const CUSTOM_CACHE_LIFETIME = 3600;
+    // TODO: Make this to be configurable at Admin Panel
+    const CUSTOM_CACHE_LIFETIME = 14400; // 4 hours
     
     const ENABLE_CMS_BLOCKS = 'system/cacheobserver/enable_cms_blocks';
     const ENABLE_CMS_PAGES = 'system/cacheobserver/enable_cms_pages';
