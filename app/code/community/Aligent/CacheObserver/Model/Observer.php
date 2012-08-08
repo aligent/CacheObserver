@@ -20,6 +20,9 @@ class Aligent_CacheObserver_Model_Observer{
 
     public function customBlockCache(Varien_Event_Observer $observer) {
         try {
+            if(Mage::app()->getRequest()->getActionName() == 'add'){
+                return $this;
+            }
             $event = $observer->getEvent();
             $block = $event->getBlock();
             $class = get_class($block);
