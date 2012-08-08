@@ -25,7 +25,11 @@
                 </observers>
             </core_block_abstract_to_html_before>
         </events>
-    
+        <helpers>
+            <cacheobserver>
+                <class>Aligent_CacheObserver_Helper</class>
+            </cacheobserver>
+        </helpers>
         <models>
             <cacheobserver>
                 <class>Aligent_CacheObserver_Model</class>
