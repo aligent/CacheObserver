@@ -2,7 +2,7 @@
 
 /*
  * Observer class which implements caching for blocks without modifying the blocks 
- * themselves.  Based on code from www.jewelsboutique.com/news/systems/magento-performance-optimization-continued-custom-block-cache-in-magento.htmlcd app
+ * themselves.  Based on code from www.jewelsboutique.com/news/systems/magento-performance-optimization-continued-custom-block-cache-in-magento.html
  */
 class Aligent_CacheObserver_Model_Observer{
     // TODO: Make this to be configurable at Admin Panel

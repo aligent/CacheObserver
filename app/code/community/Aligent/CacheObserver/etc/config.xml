@@ -33,9 +33,24 @@
         <models>
             <cacheobserver>
                 <class>Aligent_CacheObserver_Model</class>
-<!--                <resourceModel>cacheobserver_mysql4</resourceModel>  -->
             </cacheobserver>
+            <catalog_resource>
+                <rewrite>
+                    <product>Aligent_CacheObserver_Model_Resource_Catalog_Product</product>
+                    <category>Aligent_CacheObserver_Model_Resource_Catalog_Category</category>
+                </rewrite>
+            </catalog_resource>
         </models>
+        <cache>
+            <types>
+                <catalog_models>
+                    <label>Catalog Model Loading</label>
+                    <description>Cache of Catalog Objects</description>
+                    <tags>catalog_model</tags>
+                </catalog_models>
+            </types>
+        </cache>
+
     </global>
     <default>
         <system>
