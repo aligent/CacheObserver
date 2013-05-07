@@ -18,10 +18,20 @@ class Aligent_CacheObserver_Model_Observer{
     // The non-CMS Block you want to cache
     private $cacheableBlocks = array();
 
+    private $aNeverCacheBlocks = array(
+        'Mage_Catalog_Block_Product_Compare_Abstract',
+        'Mage_Wishlist_Block_Abstract',
+    );
+
     public function customBlockCache(Varien_Event_Observer $observer) {
         try {
             $event = $observer->getEvent();
             $block = $event->getBlock();
+            foreach($this->aNeverCacheBlocks as $vNeverCacheBlockName){
+                if($block instanceof $vNeverCacheBlockName){
+                    return $this;
+                }
+            }
             $class = get_class($block);
             if ($block instanceof Mage_Cms_Block_Block && $block->getBlockId() && Mage::getStoreConfig(self::ENABLE_CMS_BLOCKS)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
