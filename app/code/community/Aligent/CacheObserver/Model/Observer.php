@@ -18,6 +18,11 @@ class Aligent_CacheObserver_Model_Observer{
     // The non-CMS Block you want to cache
     private $cacheableBlocks = array();
 
+    private $aNeverCacheBlocks = array(
+        'Mage_Catalog_Block_Product_Compare_Abstract',
+        'Mage_Wishlist_Block_Abstract',
+    );
+
     public function customBlockCache(Varien_Event_Observer $observer) {
         try {
             if(Mage::app()->getRequest()->getActionName() == 'add'){
@@ -25,6 +30,11 @@ class Aligent_CacheObserver_Model_Observer{
             }
             $event = $observer->getEvent();
             $block = $event->getBlock();
+            foreach($this->aNeverCacheBlocks as $vNeverCacheBlockName){
+                if($block instanceof $vNeverCacheBlockName){
+                    return $this;
+                }
+            }
             $class = get_class($block);
             if ($block instanceof Mage_Cms_Block_Block && $block->getBlockId() && Mage::getStoreConfig(self::ENABLE_CMS_BLOCKS)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
@@ -63,11 +73,15 @@ class Aligent_CacheObserver_Model_Observer{
                 $block->setData('cache_key', 'catalog_category_list_' . $sCachekey);
                 $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Catalog_Model_Product::CACHE_TAG, Mage_Catalog_Model_Category::CACHE_TAG.'_'.Mage::app()->getRequest()->getParam('id')));
             } elseif ($block instanceof Mage_Catalog_Block_Product_Abstract && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
-                $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
+                if ($block->getProduct() !== null) {
+                    $iProductId = $block->getProduct()->getId();
+                } else {
+                    $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
+                }
                 $iPageId = Mage::app()->getRequest()->getParam('p');
                 $vAlias = $block->getNameInLayout();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'catalog_product_abstractview_product' . $iProductId.'_page_'.$iPageId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
+                $block->setData('cache_key', 'catalog_product_abstractview_product_' . $iProductId.'_page_'.$iPageId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
                 $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Catalog_Model_Product::CACHE_TAG.'_'.$iProductId));
             } elseif ($block instanceof Mage_Catalog_Block_Category_View && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW)) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
