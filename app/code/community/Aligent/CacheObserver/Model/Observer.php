@@ -125,8 +125,19 @@ class Aligent_CacheObserver_Model_Observer{
         $params = Mage::app()->getRequest()->getParams();
         $logged = Mage::getSingleton('customer/session')->isLoggedIn() ? 'loggedin' : 'loggedout';
         if(!isset($params['limit'])){
-                if(Mage::getSingleton('catalog/session')->hasData('limit_page')){
-                        $params['limit'] = Mage::getSingleton('catalog/session')->getLimitPage();
+                $catalogSession = Mage::getSingleton('catalog/session');
+
+                $sessionParams = array(
+                        'limit_page' => 'limit',
+                        'display_mode' => 'mode',
+                        'sort_order' => 'order',
+                        'sort_direction' => 'dir'
+                );
+
+                foreach ($sessionParams as $sessionKey => $paramKey) {
+                        if ($catalogSession->hasData($sessionKey)) {
+                                $params[$paramKey] = $catalogSession->getData($sessionKey);
+                        }
                 }
         }
         unset($params['id']);
