@@ -13,6 +13,8 @@ class Aligent_CacheObserver_Model_Observer{
     const ENABLE_CATEGORY_VIEW = 'system/cacheobserver/enable_category_view';
     const ENABLE_LAYER_VIEW = 'system/cacheobserver/enable_layer_view';
     const ENABLE_PRODUCT_VIEW = 'system/cacheobserver/enable_product_view';
+    const PAGE_VAR='p';
+    const LIMIT_VAR='limit';
    
     
     
@@ -57,13 +59,10 @@ class Aligent_CacheObserver_Model_Observer{
             } elseif ($block instanceof Mage_Review_Block_Product_View_List && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
                 $vAlias = $block->getNameInLayout();
-                $vPageVar=Mage::app()->getRequest()->getParam('p',false);
-                $vLimitVar=Mage::app()->getRequest()->getParam('limit',false);
-                $vPage=$vPageVar? 'page_'.$vPageVar.'_':'';
-                $vLimit=$vLimitVar? 'limit_'.$vLimitVar.'_':'';
+                $vReviewToolBarKey=$this->getReviewToolBarKey();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'review_product_view_list_' . $iProductId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vPage.$vLimit.$vAlias);
-                $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Catalog_Model_Product::CACHE_TAG.'_'.$vPage.$vLimit.$iProductId));
+                $block->setData('cache_key', 'review_product_view_list_' . $iProductId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vReviewToolBarKey.$vAlias);
+                $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Catalog_Model_Product::CACHE_TAG.'_'.$vReviewToolBarKey.$iProductId));
             } elseif ($block instanceof Mage_Review_Block_Product_View && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
                 $vAlias = $block->getNameInLayout();
@@ -73,13 +72,10 @@ class Aligent_CacheObserver_Model_Observer{
             } elseif ($block instanceof Mage_Catalog_Block_Product_View && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
                 $vAlias = $block->getNameInLayout();
-                $vPageVar=Mage::app()->getRequest()->getParam('p',false);
-                $vLimitVar=Mage::app()->getRequest()->getParam('limit',false);
-                $vPage=$vPageVar? 'page_'.$vPageVar.'_':'';
-                $vLimit=$vLimitVar? 'limit_'.$vLimitVar.'_':'';
+                $vReviewToolBarKey=$this->getReviewToolBarKey();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'catalog_product_page_' . $iProductId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vPage.$vLimit.$vAlias);
-                $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Catalog_Model_Product::CACHE_TAG.'_'.$vPage.$vLimit.$iProductId));
+                $block->setData('cache_key', 'catalog_product_page_' . $iProductId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vReviewToolBarKey.$vAlias);
+                $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Catalog_Model_Product::CACHE_TAG.'_'.$vReviewToolBarKey.$iProductId));
             } elseif ($block instanceof Mage_Catalog_Block_Product_Price && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $iProductId = $block->getProduct() ? $block->getProduct()->getId() : Mage::app()->getRequest()->getParam('id');
                 $vAlias = $block->getNameInLayout();
@@ -106,10 +102,10 @@ class Aligent_CacheObserver_Model_Observer{
                 } else {
                     $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
                 }
-                $iPageId = Mage::app()->getRequest()->getParam('p');
+                $iPageId = $this->getParamKey(self::PAGE_VAR);
                 $vAlias = $block->getNameInLayout();
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'catalog_product_abstractview_product_' . $iProductId.'_page_'.$iPageId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
+                $block->setData('cache_key', 'catalog_product_abstractview_product_' . $iProductId.'_'.$iPageId.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
                 $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Catalog_Model_Product::CACHE_TAG.'_'.$iProductId));
             } elseif ($block instanceof Mage_Catalog_Block_Category_View && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW)) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
@@ -134,7 +130,28 @@ class Aligent_CacheObserver_Model_Observer{
             Mage::logException($e);
         }
     }
-    
+
+    /**
+     * @param $vParam
+     * @return string
+     * Creates a Key from the request param. This key is used
+     * for creating unique Cache Key, and Cache Tag
+     */
+    private function getParamKey($vParam){
+        $vParamValue=Mage::app()->getRequest()->getParam($vParam,false);
+        $vParamKey=$vParamValue? $vParam.'_'.$vParamValue.'_':'';
+        return $vParamKey;
+    }
+
+    /***
+     * @return string
+     * This creates a Key for the Review List ToolBar based on params Page:P
+     * and Review Limit:limit.
+     */
+    private function getReviewToolBarKey(){
+        $vReviewToolBarKey=$this->getParamKey(self::PAGE_VAR).$this->getParamKey(self::LIMIT_VAR);
+        return $vReviewToolBarKey;
+    }
     private function _generateCategoryCacheKey(Varien_Event_Observer $observer, $sKey) {
         
         $catId = Mage::app()->getRequest()->getParam('id');
