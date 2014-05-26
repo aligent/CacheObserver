@@ -24,6 +24,15 @@
                     </cacheobserver>
                 </observers>
             </core_block_abstract_to_html_before>
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <cacheobserver>
+                        <type>singleton</type>
+                        <class>cacheobserver/observer</class>
+                        <method>replaceFormKey</method>
+                    </cacheobserver>
+                </observers>
+            </core_block_abstract_to_html_after>
         </events>
         <helpers>
             <cacheobserver>

@@ -131,6 +131,22 @@ class Aligent_CacheObserver_Model_Observer{
         }
     }
 
+    public function replaceFormKey(Varien_Event_Observer $observer) {
+        $block = $observer->getBlock();
+        $cacheKey = $block->getCacheKey();
+        /** @var $session Mage_Core_Model_Session */
+        $session = Mage::getSingleton('core/session');
+        $cacheData = Mage::app()->loadCache($cacheKey);
+        if ($cacheData) {
+            $sessionKey = $session->getFormKey();
+            if (strpos($cacheData,$sessionKey) !== false) {
+                $cacheData = str_replace($sessionKey, Phoenix_VarnishCache_Model_Observer::FORM_KEY_PLACEHOLDER, $cacheData);
+                $tags = $block->getCacheTags();
+                Mage::app()->saveCache($cacheData, $cacheKey, $tags, $block->getCacheLifetime());
+            }
+        }
+    }
+
     /**
      * @param $vParam
      * @return string
