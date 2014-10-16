@@ -24,6 +24,7 @@ class Aligent_CacheObserver_Model_Observer{
     private $aNeverCacheBlocks = array(
         'Mage_Catalog_Block_Product_Compare_Abstract',
         'Mage_Wishlist_Block_Abstract',
+        'Mage_Checkout_Block_Cart_Crosssell'
     );
 
     public function customBlockCache(Varien_Event_Observer $observer) {
