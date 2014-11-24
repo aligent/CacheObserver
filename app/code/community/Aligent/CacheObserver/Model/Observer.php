@@ -48,6 +48,9 @@ class Aligent_CacheObserver_Model_Observer{
                 $block->setData('cache_key', $key);
                 $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Cms_Model_Block::CACHE_TAG . "_" . $block->getBlockId()));
                 
+            } elseif ($block instanceof Mage_Catalog_Block_Product_List_Toolbar) {
+                return $this;
+
             } elseif ($block instanceof Mage_Cms_Block_Page && $block->getPage()->getIdentifier() && Mage::getStoreConfig(self::ENABLE_CMS_PAGES)) {
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
                 $key = 'cms_page_' . $block->getPage()->getIdentifier() . '_store_' . Mage::app()->getStore()->getId();
@@ -160,31 +163,40 @@ class Aligent_CacheObserver_Model_Observer{
         $catId = Mage::app()->getRequest()->getParam('id');
         $params = Mage::app()->getRequest()->getParams();
         $logged = Mage::getSingleton('customer/session')->isLoggedIn() ? 'loggedin' : 'loggedout';
-        if(!isset($params['limit'])){
-                $catalogSession = Mage::getSingleton('catalog/session');
+        $filters = "";
+        // Use tool-bar attribute (if found) instead of session params
+        if ($oToolbar = Mage::helper('cacheobserver')->getChildByType($observer->getBlock(), 'Mage_Catalog_Block_Product_List_Toolbar')) {
+            $filters .= 'limit_'.$oToolbar->getLimit()
+                .'curOrder_'.$oToolbar->getCurrentOrder()
+                .'curPage_'.$oToolbar->getCurrentPage()
+                .'curDir_'.$oToolbar->getCurrentDirection()
+                .'curMode_'.$oToolbar->getCurrentMode();
+        } elseif(!isset($params['limit'])) {
+            $catalogSession = Mage::getSingleton('catalog/session');
 
-                $sessionParams = array(
-                        'limit_page' => 'limit',
-                        'display_mode' => 'mode',
-                        'sort_order' => 'order',
-                        'sort_direction' => 'dir'
-                );
+            $sessionParams = array(
+                'limit_page' => 'limit',
+                'display_mode' => 'mode',
+                'sort_order' => 'order',
+                'sort_direction' => 'dir'
+            );
 
-                foreach ($sessionParams as $sessionKey => $paramKey) {
-                        if ($catalogSession->hasData($sessionKey)) {
-                                $params[$paramKey] = $catalogSession->getData($sessionKey);
-                        }
+            foreach ($sessionParams as $sessionKey => $paramKey) {
+                if ($catalogSession->hasData($sessionKey)) {
+                    $params[$paramKey] = $catalogSession->getData($sessionKey);
                 }
+            }
         }
         unset($params['id']);
         ksort($params);
-        $filters = "";
         foreach($params as $key=>$value){
-                $filters .= "_" . $key . ":" . $value;
+            $filters .= "_" . $key . ":" . $value;
         }
+
         $sTemplate = $observer->getBlock()->getTemplate();
         $cacheKey = "store_" . Mage::app()->getStore()->getId() . "_{$sKey}_id_" . $catId .'_'.$filters.'_'.$sTemplate . '_' . Mage::app()->getStore()->getCurrentCurrencyCode() . '_' . $logged;
         $cacheKey = md5($cacheKey);
+
         return $cacheKey;
     }
     
