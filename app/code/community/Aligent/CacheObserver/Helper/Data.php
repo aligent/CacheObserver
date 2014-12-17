@@ -13,6 +13,8 @@ class Aligent_CacheObserver_Helper_Data extends Mage_Core_Helper_Abstract {
             foreach ($aChildrenBlocks as $oBlock) {
                 if ($oBlock instanceof $vType) {
                     return $oBlock;
+                } elseif ($oGrandChild = $this->getChildByType($oBlock, $vType)) {
+                    return $oGrandChild;
                 }
             }
         }
