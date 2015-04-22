@@ -14,7 +14,31 @@ Magento extension to add cache keys and tags to blocks that are not cached by de
 
 Usage
 -----
-To be added.
+Add custom cache observer handlers using the following in your module's config.xml.
+See CacheObserver's config.xml for further details.
+Note: If you may use the CacheObserver's model/methods for caching you're own blocks if required.
+```
+<config>
+    <cacheObserver>
+        <!-- 
+            The observer id should be a unique key. Note that all observers will be sorted alphabetically by the
+            observer key. 
+            You may make use of Magento's config.xml merging to overwrite another module's configs if needed.
+        -->
+        <module_name_observer_id>
+            <!--
+                `model` is a standard model alias to tell the model
+            -->
+            <model>module_name/model</model>
+            <method>myCustomCacheObserverMethod</method>
+            <classes>
+                <!-- A list of classes to 
+                <Some_Module_Block_To_Cache/> 
+            </classes>
+        </module_name_observ_id>
+    </cacheObserver>
+</config>
+```
 
 Requirements
 ------------
