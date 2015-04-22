@@ -72,4 +72,11 @@
             </cacheobserver>
         </system>
     </default>
+    <phpunit>
+        <suite>
+            <modules>
+                <Aligent_CacheObserver/>
+            </modules>
+        </suite>
+    </phpunit>
 </config>
