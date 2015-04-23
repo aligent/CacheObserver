@@ -32,7 +32,7 @@ class Aligent_CacheObserver_Test_Config_Config extends EcomDev_PHPUnit_Test_Case
     }
 
     /**
-     * @loadFixture config
+     * @loadFixture config_config
      */
     public function testCanReadConfigFixture()
     {
