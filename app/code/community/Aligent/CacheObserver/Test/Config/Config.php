@@ -31,4 +31,26 @@ class Aligent_CacheObserver_Test_Config_Config extends EcomDev_PHPUnit_Test_Case
         $this->assertModelAlias('cacheobserver/foo', 'Aligent_CacheObserver_Model_Foo');
     }
 
+    /**
+     * @loadFixture config
+     */
+    public function testCanReadConfigFixture()
+    {
+        $this->assertConfigNodeValue('cacheObserver/cacheobserver_default/model', 'cacheobserver/default');
+        $this->assertConfigNodeSimpleXml('cacheObserver',
+            new SimpleXMLElement(<<<'XML'
+      <cacheObserver>
+          <cacheobserver_default>
+              <model>cacheobserver/default</model>
+              <method>default</method>
+              <classes>
+                  <Aligent_CacheObserver_Block_Test_Foo/>
+                  <Aligent_CacheObserver_Block_Test_Bar/>
+              </classes>
+          </cacheobserver_default>
+      </cacheObserver>
+XML
+)
+            );
+    }
 }
