@@ -22,6 +22,11 @@
                         <class>cacheobserver/observer</class>
                         <method>customBlockCache</method>
                     </cacheobserver>
+                    <cacheobserver2>
+                        <type>singleton</type>
+                        <class>cacheobserver/observer2</class>
+                        <method>customBlockCache</method>
+                    </cacheobserver2>
                 </observers>
             </core_block_abstract_to_html_before>
             <core_block_abstract_to_html_after>
