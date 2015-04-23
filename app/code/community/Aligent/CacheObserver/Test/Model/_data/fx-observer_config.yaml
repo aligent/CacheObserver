@@ -1,0 +1,12 @@
+config_xml:
+  cacheObserver: |
+      <cacheObserver>
+          <cacheobserver_default>
+              <model>cacheobserver_test/observer_foo</model>
+              <method>testFoo</method>
+              <classes>
+                  <Aligent_CacheObserver_Block_Test_Foo/>
+                  <Aligent_CacheObserver_Block_Test_Bar/>
+              </classes>
+          </cacheobserver_default>
+      </cacheObserver>
