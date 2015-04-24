@@ -104,9 +104,11 @@ class Aligent_CacheObserver_Model_Observer{
                 }
                 $vPageParamKey = $this->getParamKey(self::PAGE_VAR);
                 $vAlias = $block->getNameInLayout();
+                $sCachekey = $this->_generateProductCacheKey($observer,Mage::registry('current_product'),$vPageParamKey);
+                $aCacheTags = $this->_generateProductCacheTags($observer,Mage::registry('current_product'));
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
-                $block->setData('cache_key', 'catalog_product_abstractview_product_' . $iProductId.'_'.$vPageParamKey.(Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout') . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode().'_'.$vAlias);
-                $block->setData('cache_tags', array(Mage_Core_Block_Abstract::CACHE_GROUP, Mage_Core_Model_App::CACHE_TAG, Mage_Core_Model_Store::CACHE_TAG, Mage_Catalog_Model_Product::CACHE_TAG.'_'.$iProductId));
+                $block->setData('cache_key', $sCachekey);
+                $block->setData('cache_tags', $aCacheTags);
             } elseif ($block instanceof Mage_Catalog_Block_Category_View && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW)) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
                 $block->setData('cache_lifetime', self::CUSTOM_CACHE_LIFETIME);
@@ -184,5 +186,36 @@ class Aligent_CacheObserver_Model_Observer{
         $cacheKey = md5($cacheKey);
         return $cacheKey;
     }
-    
+
+    /**
+     * Create separate cached block for each product, viewed by each customer group (e.g. to cache different tax display rules)
+     */
+    private function _generateProductCacheKey(Varien_Event_Observer $obsever, $oProduct, $pageParam){
+        if(!$oProduct){
+            return '';
+        }
+        $iCustomerGroup = Mage::getSingleton('customer/session')->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomerGroupId() : 0;
+        return 'catalog_product_abstractview_product_' . $oProduct->getEntityId() . '_' . $pageParam . '_' . $iCustomerGroup;
+    }
+
+    /**
+     * Accommodated grouped products by adding the tag for each associated product.
+     */
+    private function _generateProductCacheTags(Varien_Event_Observer $observer, $oProduct){
+        if(!$oProduct){
+            return array();
+        }
+        $tags = array(Mage_Core_Block_Abstract::CACHE_GROUP,
+                      Mage_Core_Model_App::CACHE_TAG,
+                      Mage_Core_Model_Store::CACHE_TAG,
+                      Mage_Catalog_Model_Product::CACHE_TAG.'_'.$oProduct->getEntityId());
+
+        if($oProduct->getTypeId() == 'grouped'){
+            $aChildren = $oProduct->getTypeInstance(true)->getAssociatedProducts($this->getParentBlock()->getProduct());
+            foreach($aChildren as $oChild){
+                $tags[] = Mage_Catalog_Model_Product::CACHE_TAG.'_'.$oChild->getEntityId();
+            }
+        }
+        return $tags;
+    }
 }
