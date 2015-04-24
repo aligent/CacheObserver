@@ -1,0 +1,14 @@
+Aligent_CacheObserver_Block_Test_Foo:
+  observers:
+    - Aligent_CacheObserver_Test_Model_Observer_Default::testFoo
+    - Aligent_CacheObserver_Test_Model_Observer_Foo::testBar
+    - Aligent_CacheObserver_Test_Model_Observer_Bar::testFoo
+Aligent_CacheObserver_Block_Test_Bar:
+  observers:
+    - Aligent_CacheObserver_Test_Model_Observer_Default::testFoo
+    - Aligent_CacheObserver_Test_Model_Observer_Foo::testBar
+Aligent_CacheObserver_Block_Test_Qaz:
+  observers:
+    - Aligent_CacheObserver_Test_Model_Observer_Qaz::testQaz
+Aligent_CacheObserver_Block_Test_Qux:
+  observers: []
