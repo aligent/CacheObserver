@@ -40,6 +40,7 @@
     <default>
         <system>
             <cacheobserver>
+                <cache_lifetime>14400</cache_lifetime>
                 <enable_cms_pages>1</enable_cms_pages>
                 <enable_cms_blocks>1</enable_cms_blocks>
                 <enable_category_view>1</enable_category_view>
