@@ -46,6 +46,7 @@
                 <enable_category_view>1</enable_category_view>
                 <enable_layer_view>1</enable_layer_view>
                 <enable_product_view>1</enable_product_view>
+                <enable_customer_group>0</enable_customer_group>
             </cacheobserver>
         </system>
     </default>
