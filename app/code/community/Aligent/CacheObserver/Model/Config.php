@@ -28,7 +28,9 @@ class Aligent_CacheObserver_Model_Config
     protected $_observersIndexedByClassName = null;
 
     /**
-     * Returns an array of callable observers for the given class.
+     * Returns an array of callable observers for the given class name.
+     * Note, this returns the observers for the class as defined in the config.xml. This method does not return
+     * observers that were defined for any parent class or interface.
      *
      * @param string $className
      *
