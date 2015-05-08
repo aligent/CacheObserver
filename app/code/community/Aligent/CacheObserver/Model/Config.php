@@ -25,24 +25,24 @@ class Aligent_CacheObserver_Model_Config
 
     const XML_PATH_CACHEOBSERVER = 'cacheObserver';
 
-    protected $_observersIndexedByClass = null;
+    protected $_observersIndexedByClassName = null;
 
     /**
-     * Returns an array of callable observers for the given block class.
+     * Returns an array of callable observers for the given class.
      *
-     * @param string $blockClass
+     * @param string $className
      *
      * @return array
      *
      * @throws Exception when the config can't be read.
      */
-    public function getObserversByBlockClass($blockClass)
+    public function getObserversByClassName($className)
     {
         $observers = $this->_getObserversIndexedByClass();
-        if (!array_key_exists($blockClass, $observers)) {
+        if (!array_key_exists($className, $observers)) {
             return array();
         }
-        return $observers[$blockClass];
+        return $observers[$className];
     }
 
     protected function _getObserversIndexedByClass()

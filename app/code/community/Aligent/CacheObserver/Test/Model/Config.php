@@ -43,12 +43,12 @@ class Aligent_CacheObserver_Test_Model_Config extends EcomDev_PHPUnit_Test_Case
      * @dataProvider dataProvider
      * @loadExpectation
      */
-    public function testGetObserversByBlockClass($blockClass)
+    public function testGetObserversByClassName($className)
     {
         $config    = $this->_config;
-        $observers = $config->getObserversByBlockClass($blockClass);
+        $observers = $config->getObserversByClassName($className);
         $this->assertTrue(is_array($observers), 'Expect observers to be an array.');
-        $expectedObservers = $this->expected($blockClass)->getObservers();
+        $expectedObservers = $this->expected($className)->getObservers();
         $this->assertSameSize($expectedObservers, $observers);
         // Don't ever expect boolean false values in array. see docs for current().
         for (reset($expectedObservers), reset($observers), $i = 0;
