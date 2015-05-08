@@ -50,6 +50,7 @@ class Aligent_CacheObserver_Test_Model_Observer extends EcomDev_PHPUnit_Test_Cas
 
     /**
      * @loadFixture config
+     * @loadFixture observer_config
      */
     public function testObserverCallsCacheObserverMethodWhenBlockMatches()
     {
@@ -68,6 +69,7 @@ class Aligent_CacheObserver_Test_Model_Observer extends EcomDev_PHPUnit_Test_Cas
 
     /**
      * @loadFixture config
+     * @loadFixture observer_config
      */
     public function testObserverDoesntCallCacheObserverMethodWhenBlockDoesntMatch()
     {
