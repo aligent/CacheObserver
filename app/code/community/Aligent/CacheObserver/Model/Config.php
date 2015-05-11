@@ -36,7 +36,16 @@ class Aligent_CacheObserver_Model_Config
      * @return array
      */
     public function getObserversByBlockInstance($blockInstance) {
-        return $this->getObserversByClassName(get_class($blockInstance));
+        $lineage = array_merge(
+            array(get_class($blockInstance)),
+            class_parents($blockInstance),
+            class_implements($blockInstance)
+        );
+        $observers = array();
+        foreach ($lineage as $className) {
+            $observers = array_merge($observers, $this->getObserversByClassName($className));
+        }
+        return $observers;
     }
 
     /**
