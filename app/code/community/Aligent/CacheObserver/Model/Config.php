@@ -94,7 +94,10 @@ class Aligent_CacheObserver_Model_Config
     protected function _getObserver(Mage_Core_Model_Config_Element $node)
     {
         $this->_validateObserverNode($node);
-        $observer = array(Mage::getConfig()->getModelClassName((string) $node->model), (string) $node->method);
+        $observer = array(
+            'model_alias' => (string) $node->model,
+            'method'      => (string) $node->method
+        );
         $classes = array();
         foreach ($node->classes->children() as $classNode) {
             $classes[] = $classNode->getName();

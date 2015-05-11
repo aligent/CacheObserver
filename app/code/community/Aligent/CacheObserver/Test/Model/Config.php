@@ -70,11 +70,8 @@ class Aligent_CacheObserver_Test_Model_Config extends EcomDev_PHPUnit_Test_Case
              false !== $observer = current($observers);
              next($expectedObservers), next($observers), $i++
         ) {
-            $this->assertTrue(
-                is_callable($observer, true, $observerCallableName),
-                'Expect each observer to be callable'
-            );
-            $this->assertSame($expectedObserver, $observerCallableName);
+            $this->assertSame($expectedObserver['model_alias'], $observer['model_alias'], 'Observer model alias mismatch');
+            $this->assertSame($expectedObserver['method'], $observer['method'], 'Observer method mismatch');
         }
         $this->assertSame(count($expectedObservers), $i, 'Check loop count in case of real false values in array');
     }
@@ -99,11 +96,8 @@ class Aligent_CacheObserver_Test_Model_Config extends EcomDev_PHPUnit_Test_Case
              false !== $observer = current($observers);
              next($expectedObservers), next($observers), $i++
         ) {
-            $this->assertTrue(
-                is_callable($observer, true, $observerCallableName),
-                'Expect each observer to be callable'
-            );
-            $this->assertSame($expectedObserver, $observerCallableName);
+            $this->assertSame($expectedObserver['model_alias'], $observer['model_alias'], 'Observer model alias mismatch');
+            $this->assertSame($expectedObserver['method'], $observer['method'], 'Observer method mismatch');
         }
         $this->assertSame(count($expectedObservers), $i, 'Check loop count in case of real false values in array');
     }
