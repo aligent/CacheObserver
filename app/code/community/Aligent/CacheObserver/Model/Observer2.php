@@ -23,15 +23,18 @@
 class Aligent_CacheObserver_Model_Observer2
 {
 
-    public function customBlockCache(Varien_Event_Observer $observer)
+    public function customBlockCache(Varien_Event_Observer $eventObserver)
     {
         /** @var Mage_Core_Block_Abstract $block */
-        $block = $observer->getBlock();
+        $block = $eventObserver->getBlock();
 
-        // @TODO: This is not production code, this is minimal code to get the test to pass. There's still a lot of work to be done.
-        $observerModel = Mage::getSingleton('cacheobserver_test/observer_foo');
-        $observerModel->testFoo($block);
+        $cacheObserverConfig = Mage::getSingleton('cacheobserver/config');
+
+        $observers = $cacheObserverConfig->getObserversByBlockInstance($block);
+
+        foreach ($observers as $observer) {
+            Mage::getModel($observer['model_alias'])->$observer['method']($block);
+        }
 
     }
-
 }
