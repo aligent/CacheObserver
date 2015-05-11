@@ -5,8 +5,8 @@ config_xml:
               <model>cacheobserver_test/observer_foo</model>
               <method>testFoo</method>
               <classes>
-                  <Aligent_CacheObserver_Block_Test_Foo/>
-                  <Aligent_CacheObserver_Block_Test_Bar/>
+                  <Aligent_CacheObserver_Test_Block_Foo/>
+                  <Aligent_CacheObserver_Test_Block_Bar/>
               </classes>
           </cacheobserver_default>
       </cacheObserver>
