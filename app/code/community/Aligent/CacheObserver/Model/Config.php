@@ -77,7 +77,7 @@ class Aligent_CacheObserver_Model_Config
                 return $observers;
             }
             foreach ($cacheObserverConfig->children() as $node) {
-                $observer = $this->_getObserver($node);
+                $observer = $this->_configNodeToObserver($node);
                 foreach ($observer['classes'] as $class) {
                     if (!array_key_exists($class, $observers)) {
                         $observers[$class] = array($observer['observer']);
@@ -91,7 +91,7 @@ class Aligent_CacheObserver_Model_Config
         return $observers;
     }
 
-    protected function _getObserver(Mage_Core_Model_Config_Element $node)
+    protected function _configNodeToObserver(Mage_Core_Model_Config_Element $node)
     {
         $this->_validateObserverNode($node);
         $observer = array(
