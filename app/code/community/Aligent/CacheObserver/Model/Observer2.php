@@ -23,6 +23,13 @@
 class Aligent_CacheObserver_Model_Observer2
 {
 
+    /**
+     * Observes core_block_abstract_to_html_before
+     *
+     * Calls observers for each block. @see readme.md for details.
+     *
+     * @param Varien_Event_Observer $eventObserver
+     */
     public function customBlockCache(Varien_Event_Observer $eventObserver)
     {
         /** @var Mage_Core_Block_Abstract $block */
