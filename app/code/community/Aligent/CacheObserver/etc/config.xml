@@ -77,16 +77,6 @@
         </system>
     </default>
     <cacheObserver>
-    <!--
-        <cacheobserver_default>
-            <model>cacheobserver/default</model>
-            <method>default</method>
-            <classes>
-                <Aligent_CacheObserver_Block_Test_Foo/>
-                <Aligent_CacheObserver_Block_Test_Bar/>
-            </classes>
-        </cacheobserver_default>
-    -->
     </cacheObserver>
     <phpunit>
         <suite>
