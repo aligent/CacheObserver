@@ -23,6 +23,32 @@
 class Aligent_CacheObserver_Test_Config_Config extends EcomDev_PHPUnit_Test_Case_Config
 {
 
+    /** @var Mage_Core_Model_Config_Element */
+    protected static $_origConfigElement;
+
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        /** @var Mage_Core_Model_Config_Element $configElement */
+        static::$_origConfigElement = Mage::getConfig()->getNode(
+            Aligent_CacheObserver_Model_Config::XML_PATH_CACHEOBSERVER
+        )->asXML();
+        Mage::getConfig()->setNode(Aligent_CacheObserver_Model_Config::XML_PATH_CACHEOBSERVER, '', true);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        $origConfigElement = self::$_origConfigElement;
+        if (false !== $origConfigElement) {
+            Mage::getConfig()->setNode(
+                Aligent_CacheObserver_Model_Config::XML_PATH_CACHEOBSERVER,
+                $origConfigElement,
+                true
+            );
+        }
+        parent::tearDownAfterClass();
+    }
+
     /**
      * A simple smoke test to ensure the unit tests are set up correctly.
      */
