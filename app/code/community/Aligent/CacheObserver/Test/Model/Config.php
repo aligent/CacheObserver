@@ -36,15 +36,24 @@ class Aligent_CacheObserver_Block_Test_Qax extends Aligent_CacheObserver_Block_T
  */
 class Aligent_CacheObserver_Test_Model_Config extends EcomDev_PHPUnit_Test_Case
 {
-
+    /**
+     * Container for the configuration
+     * @var Aligent_CacheObserver_Model_Config
+     */
     protected $_config;
 
+    /**
+     * Set up the configuration model
+     */
     protected function setUp()
     {
         parent::setUp();
         $this->_config = Mage::getSingleton('cacheobserver/config');
     }
 
+    /**
+     * Remove the configuration model
+     */
     protected function tearDown()
     {
         parent::tearDown();
@@ -61,18 +70,30 @@ class Aligent_CacheObserver_Test_Model_Config extends EcomDev_PHPUnit_Test_Case
     {
         $config    = $this->_config;
         $observers = $config->getObserversByClassName($className);
+        
         $this->assertTrue(is_array($observers), 'Expect observers to be an array.');
+        
         $expectedObservers = $this->expected($className)->getObservers();
         $this->assertSameSize($expectedObservers, $observers);
+
         // Don't ever expect boolean false values in array. see docs for current().
         for (reset($expectedObservers), reset($observers), $i = 0;
              false !== $expectedObserver = current($expectedObservers),
              false !== $observer = current($observers);
              next($expectedObservers), next($observers), $i++
         ) {
-            $this->assertSame($expectedObserver['model_alias'], $observer['model_alias'], 'Observer model alias mismatch');
-            $this->assertSame($expectedObserver['method'], $observer['method'], 'Observer method mismatch');
+            $this->assertSame(
+                $expectedObserver['model_alias'],
+                $observer['model_alias'],
+                'Observer model alias mismatch'
+            );
+            $this->assertSame(
+                $expectedObserver['method'],
+                $observer['method'],
+                'Observer method mismatch'
+            );
         }
+        
         $this->assertSame(count($expectedObservers), $i, 'Check loop count in case of real false values in array');
     }
 
@@ -84,21 +105,33 @@ class Aligent_CacheObserver_Test_Model_Config extends EcomDev_PHPUnit_Test_Case
      */
     public function testGetObserversByBlockInstance($className)
     {
-        $config    = $this->_config;
+        $config        = $this->_config;
         $blockInstance = new $className();
-        $observers = $config->getObserversByBlockInstance($blockInstance);
+        $observers     = $config->getObserversByBlockInstance($blockInstance);
+
         $this->assertTrue(is_array($observers), 'Expect observers to be an array.');
+        
         $expectedObservers = $this->expected($className)->getObservers();
         $this->assertSameSize($expectedObservers, $observers);
+        
         // Don't ever expect boolean false values in array. see docs for current().
         for (reset($expectedObservers), reset($observers), $i = 0;
              false !== $expectedObserver = current($expectedObservers),
              false !== $observer = current($observers);
              next($expectedObservers), next($observers), $i++
         ) {
-            $this->assertSame($expectedObserver['model_alias'], $observer['model_alias'], 'Observer model alias mismatch');
-            $this->assertSame($expectedObserver['method'], $observer['method'], 'Observer method mismatch');
+            $this->assertSame(
+                $expectedObserver['model_alias'],
+                $observer['model_alias'],
+                'Observer model alias mismatch'
+            );
+            $this->assertSame(
+                $expectedObserver['method'],
+                $observer['method'],
+                'Observer method mismatch'
+            );
         }
+
         $this->assertSame(count($expectedObservers), $i, 'Check loop count in case of real false values in array');
     }
 }
