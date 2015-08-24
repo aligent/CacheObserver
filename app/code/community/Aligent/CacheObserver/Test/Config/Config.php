@@ -1,16 +1,5 @@
 <?php
 /**
- * Config.php
- *
- * @category  Aligent
- * @package   Aligent_CacheObserver
- * @author    Luke Mills <luke@aligent.com.au>
- * @copyright 2015 Aligent Consulting.
- * @license   OSL-3.0
- * @link      http://www.aligent.com.au/
- */
-
-/**
  * Aligent_VaryCookie_Test_Config_Config
  *
  * @category  Aligent
@@ -26,16 +15,22 @@ class Aligent_CacheObserver_Test_Config_Config extends EcomDev_PHPUnit_Test_Case
     /** @var Mage_Core_Model_Config_Element */
     protected static $_origConfigElement;
 
+    /**
+     * Instiates the configuration elements
+     */
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
         /** @var Mage_Core_Model_Config_Element $configElement */
-        static::$_origConfigElement = Mage::getConfig()->getNode(
-            Aligent_CacheObserver_Model_Config::XML_PATH_CACHEOBSERVER
-        )->asXML();
+        static::$_origConfigElement = Mage::getConfig()
+            ->getNode(Aligent_CacheObserver_Model_Config::XML_PATH_CACHEOBSERVER)
+            ->asXML();
         Mage::getConfig()->setNode(Aligent_CacheObserver_Model_Config::XML_PATH_CACHEOBSERVER, '', true);
     }
 
+    /**
+     * Removes the configuration elements after the unit tests are complete
+     */
     public static function tearDownAfterClass()
     {
         $origConfigElement = self::$_origConfigElement;
@@ -63,7 +58,8 @@ class Aligent_CacheObserver_Test_Config_Config extends EcomDev_PHPUnit_Test_Case
     public function testCanReadConfigFixture()
     {
         $this->assertConfigNodeValue('cacheObserver/cacheobserver_default/model', 'cacheobserver/default');
-        $this->assertConfigNodeSimpleXml('cacheObserver',
+        $this->assertConfigNodeSimpleXml(
+            'cacheObserver',
             new SimpleXMLElement(<<<'XML'
       <cacheObserver>
           <cacheobserver_default>
@@ -77,6 +73,6 @@ class Aligent_CacheObserver_Test_Config_Config extends EcomDev_PHPUnit_Test_Case
       </cacheObserver>
 XML
 )
-            );
+        );
     }
 }

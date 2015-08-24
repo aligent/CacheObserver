@@ -1,11 +1,24 @@
 <?php
-/*
+/**
  * Rewrite to add caching to Catalog Model objects
  * Based on code from http://www.johannreinke.com/en/2012/04/13/magento-how-to-cache-product-loading/
+ *
+ * @category   Aligent
+ * @package    Aligent_CacheObserver
+ * @author     ModuleCreator
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class Aligent_CacheObserver_Model_Resource_Catalog_Product extends Mage_Catalog_Model_Resource_Product {
-
-    public function load($oProduct, $id, $attributes = array()){
+class Aligent_CacheObserver_Model_Resource_Catalog_Product extends Mage_Catalog_Model_Resource_Product
+{
+    /**
+     * Loads a product
+     * @param  Mage_Catalog_Model_Product $oProduct
+     * @param  int                        $id
+     * @param  array                      $attributes
+     * @return self
+     */
+    public function load($oProduct, $id, $attributes = array())
+    {
 
         if (null !== $attributes || !Mage::app()->useCache('catalog_models')) {
             return parent::load($oProduct, $id, $attributes);
@@ -14,7 +27,7 @@ class Aligent_CacheObserver_Model_Resource_Catalog_Product extends Mage_Catalog_
         // Caching product data
         Varien_Profiler::start(__METHOD__);
         $storeId = (int) $oProduct->getStoreId();
-        $cacheId = "product-$id-$storeId";
+        $cacheId = "product-{$id}-{$storeId}";
         if ($cacheContent = Mage::app()->loadCache($cacheId)) {
             $data = unserialize($cacheContent);
             if (!empty($data)) {
@@ -41,9 +54,14 @@ class Aligent_CacheObserver_Model_Resource_Catalog_Product extends Mage_Catalog_
         Varien_Profiler::stop(__METHOD__);
 
         return $this;
-
     }
 
+    /**
+     * Provides an exception handling wrapper for _getLoadAttributesSelect()
+     * @param  object $object
+     * @param  string $table
+     * @return mixed
+     */
     protected function _getLoadAttributesSelect($object, $table)
     {
         try{
@@ -53,5 +71,4 @@ class Aligent_CacheObserver_Model_Resource_Catalog_Product extends Mage_Catalog_
             Mage::logException($e);
         }
     }
-
 }

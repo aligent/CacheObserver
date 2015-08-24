@@ -1,16 +1,5 @@
 <?php
 /**
- * Config.php
- *
- * @category  Aligent
- * @package   Aligent_CacheObserver
- * @author    Luke Mills <luke@aligent.com.au>
- * @copyright 2015 Aligent Consulting.
- * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link      http://www.aligent.com.au/
- */
-
-/**
  * Aligent_CacheObserver_Model_Config
  *
  * @category  Aligent
@@ -22,7 +11,10 @@
  */
 class Aligent_CacheObserver_Model_Config
 {
-
+    /**
+     * The path for the CacheObserver's XML configuraiton
+     * @var string
+     */
     const XML_PATH_CACHEOBSERVER = 'cacheObserver';
 
     protected $_observersIndexedByClassName = null;
@@ -31,20 +23,22 @@ class Aligent_CacheObserver_Model_Config
      * Returns an array of callable observers for the given block instance.
      * Note, this returns all the observers defined for any class or interface in the block instance's ancestry.
      *
-     * @param $blockInstance
-     *
+     * @param  object $blockInstance
      * @return array
      */
-    public function getObserversByBlockInstance($blockInstance) {
+    public function getObserversByBlockInstance($blockInstance)
+    {
         $ancestry = array_merge(
             array(get_class($blockInstance)),
             class_parents($blockInstance),
             class_implements($blockInstance)
         );
         $observers = array();
+
         foreach ($ancestry as $className) {
             $observers = array_merge($observers, $this->getObserversByClassName($className));
         }
+
         return $observers;
     }
 
@@ -53,11 +47,9 @@ class Aligent_CacheObserver_Model_Config
      * Note, this returns the observers for the class as defined in the config.xml. This method does not return
      * observers that were defined for any parent class or interface.
      *
-     * @param string $className
-     *
+     * @param  string $className
      * @return array
-     *
-     * @throws Exception when the config can't be read.
+     * @throws Exception When the config can't be read.
      */
     public function getObserversByClassName($className)
     {
@@ -68,6 +60,10 @@ class Aligent_CacheObserver_Model_Config
         return $observers[$className];
     }
 
+    /**
+     * Gets an array of observers indexed by the class name
+     * @return array
+     */
     protected function _getObserversIndexedByClass()
     {
         if (is_null($observers = &$this->_observersIndexedByClass)) {
@@ -91,6 +87,11 @@ class Aligent_CacheObserver_Model_Config
         return $observers;
     }
 
+    /**
+     * Returns a list of observers including their model_alias, method and physical class names
+     * @param  Mage_Core_Model_Config_Element $node
+     * @return array
+     */
     protected function _configNodeToObserver(Mage_Core_Model_Config_Element $node)
     {
         $this->_validateObserverNode($node);
@@ -98,13 +99,19 @@ class Aligent_CacheObserver_Model_Config
             'model_alias' => (string) $node->model,
             'method'      => (string) $node->method
         );
+
         $classes = array();
         foreach ($node->classes->children() as $classNode) {
             $classes[] = $classNode->getName();
         }
+
         return array('observer' => $observer, 'classes' => $classes);
     }
 
+    /**
+     * Performs various assertions on the passed in config node
+     * @param  Mage_Core_Model_Config_Element $node
+     */
     protected function _validateObserverNode(Mage_Core_Model_Config_Element $node)
     {
         $this->_assert(!is_null(Mage::getConfig()->getModelClassName((string) $node->model)), 'Invalid model alias');
@@ -112,8 +119,17 @@ class Aligent_CacheObserver_Model_Config
         $this->_assert(count($node->classes) > 0, 'Expected class names');
     }
 
-    protected function _assert($test, $message = '') {
-        if ($test !== true) {
+    /**
+     * Unit test style assertion that $test is bool true
+     * @param  mixed  $test
+     * @param  string $message   A message to return in the exception on failure
+     * @param  mixed  $compareTo What to compare $test to (default: true)
+     * @return void
+     * @throws Exception         When $test is not true
+     */
+    protected function _assert($test, $message = '', $compareTo = true)
+    {
+        if ($compareTo !== $test) {
             throw new Exception($message);
         }
     }
