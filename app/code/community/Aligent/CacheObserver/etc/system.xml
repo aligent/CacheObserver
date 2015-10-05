@@ -3,13 +3,21 @@
     <sections>
         <system>
             <groups>
-                <cacheobserver translate="label comment" module="varnishcache">
+                <cacheobserver translate="label comment" module="cacheobserver">
                     <label>CacheObserver</label>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <sort_order>901</sort_order>
                     <fields>
+                        <cache_lifetime translate="label comment">
+                            <label>Custom cache lifetime (seconds)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </cache_lifetime>
                         <enable_cms_pages translate="label comment">
                             <label>Enable Caching of CMS Pages</label>
                             <frontend_type>select</frontend_type>
@@ -55,6 +63,16 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enable_product_view>
+                        <enable_customer_group translate="label comment">
+                            <label>Enable caching based on customer group</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>12</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Applies to Mage_Catalog_Block_Product_Price and Mage_Catalog_Block_Product_View</comment>
+                        </enable_customer_group>
                     </fields>
                 </cacheobserver>
             </groups>

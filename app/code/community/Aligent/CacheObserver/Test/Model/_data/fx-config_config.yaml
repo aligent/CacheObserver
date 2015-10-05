@@ -1,0 +1,34 @@
+config_xml:
+  cacheObserver: |
+      <cacheObserver>
+          <cacheobserver_default>
+              <model>cacheobserver_test/observer_default</model>
+              <method>testFoo</method>
+              <classes>
+                  <Aligent_CacheObserver_Block_Test_Foo/>
+                  <Aligent_CacheObserver_Block_Test_Bar/>
+              </classes>
+          </cacheobserver_default>
+          <cacheobserver_foo>
+              <model>cacheobserver_test/observer_foo</model>
+              <method>testBar</method>
+              <classes>
+                  <Aligent_CacheObserver_Block_Test_Foo/>
+                  <Aligent_CacheObserver_Block_Test_Bar/>
+              </classes>
+          </cacheobserver_foo>
+          <cacheobserver_bar>
+              <model>cacheobserver_test/observer_bar</model>
+              <method>testFoo</method>
+              <classes>
+                  <Aligent_CacheObserver_Block_Test_Foo/>
+              </classes>
+          </cacheobserver_bar>
+          <cacheobserver_qaz>
+              <model>cacheobserver_test/observer_qaz</model>
+              <method>testQaz</method>
+              <classes>
+                  <Aligent_CacheObserver_Block_Test_Qaz/>
+              </classes>
+          </cacheobserver_qaz>
+      </cacheObserver>

@@ -1,0 +1,40 @@
+Aligent_CacheObserver_Block_Test_Foo:
+  observers:
+    - model_alias: cacheobserver_test/observer_default
+      method: testFoo
+    - model_alias: cacheobserver_test/observer_foo
+      method: testBar
+    - model_alias: cacheobserver_test/observer_bar
+      method: testFoo
+Aligent_CacheObserver_Block_Test_Bar:
+  observers:
+    - model_alias: cacheobserver_test/observer_default
+      method: testFoo
+    - model_alias: cacheobserver_test/observer_foo
+      method: testBar
+Aligent_CacheObserver_Block_Test_Qaz:
+  observers:
+    - model_alias: cacheobserver_test/observer_qaz
+      method: testQaz
+Aligent_CacheObserver_Block_Test_Qux:
+  observers: []
+Aligent_CacheObserver_Block_Test_Zip:
+  observers:
+    - model_alias: cacheobserver_test/observer_default
+      method: testFoo
+    - model_alias: cacheobserver_test/observer_foo
+      method: testBar
+    - model_alias: cacheobserver_test/observer_bar
+      method: testFoo
+Aligent_CacheObserver_Block_Test_Zup:
+  observers:
+    - model_alias: cacheobserver_test/observer_default
+      method: testFoo
+    - model_alias: cacheobserver_test/observer_foo
+      method: testBar
+Aligent_CacheObserver_Block_Test_Qoz:
+  observers:
+    - model_alias: cacheobserver_test/observer_qaz
+      method: testQaz
+Aligent_CacheObserver_Block_Test_Qax:
+  observers: []
