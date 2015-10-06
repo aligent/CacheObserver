@@ -1,16 +1,5 @@
 <?php
 /**
- * Config.php
- *
- * @category  Aligent
- * @package   Aligent_CacheObserver
- * @author    Luke Mills <luke@aligent.com.au>
- * @copyright 2015 Aligent Consulting.
- * @license   OSL-3.0
- * @link      http://www.aligent.com.au/
- */
-
-/**
  * Aligent_VaryCookie_Test_Config_Config
  *
  * @category  Aligent

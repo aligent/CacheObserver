@@ -1,16 +1,5 @@
 <?php
 /**
- * Observer.php
- *
- * @category  Aligent
- * @package   Aligent_CacheObserver
- * @author    Luke Mills <luke@aligent.com.au>
- * @copyright 2015 Aligent Consulting.
- * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link      http://www.aligent.com.au/
- */
-
-/**
  * Aligent_CacheObserver_Test_Model_Observer
  *
  * @category  Aligent

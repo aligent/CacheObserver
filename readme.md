@@ -1,7 +1,5 @@
 Aligent CacheObserver Extension
 ===============================
-** WARNING ** v2.0 is under heavy development and not ready for use. Please use master.
-
 Magento extension to add cache keys and tags to blocks that are not cached by default.
 
 Facts
