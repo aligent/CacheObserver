@@ -13,7 +13,7 @@
             <version>0.1.0</version>
         </Aligent_CacheObserver>
     </modules>
-    <global>
+    <frontend>
         <events>
             <core_block_abstract_to_html_before>
                 <observers>
@@ -25,6 +25,8 @@
                 </observers>
             </core_block_abstract_to_html_before>
         </events>
+    </frontend>
+    <global>
         <helpers>
             <cacheobserver>
                 <class>Aligent_CacheObserver_Helper</class>
