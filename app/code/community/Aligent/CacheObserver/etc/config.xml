@@ -22,8 +22,22 @@
                         <class>cacheobserver/observer</class>
                         <method>customBlockCache</method>
                     </cacheobserver>
+                    <cacheobserver2>
+                        <type>singleton</type>
+                        <class>cacheobserver/observer2</class>
+                        <method>customBlockCache</method>
+                    </cacheobserver2>
                 </observers>
             </core_block_abstract_to_html_before>
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <cacheobserver>
+                        <type>singleton</type>
+                        <class>cacheobserver/observer</class>
+                        <method>replaceFormKey</method>
+                    </cacheobserver>
+                </observers>
+            </core_block_abstract_to_html_after>
         </events>
     </frontend>
     <global>
@@ -35,19 +49,45 @@
         <models>
             <cacheobserver>
                 <class>Aligent_CacheObserver_Model</class>
-<!--                <resourceModel>cacheobserver_mysql4</resourceModel>  -->
             </cacheobserver>
+            <catalog_resource>
+                <rewrite>
+                    <product>Aligent_CacheObserver_Model_Resource_Catalog_Product</product>
+                    <category>Aligent_CacheObserver_Model_Resource_Catalog_Category</category>
+                </rewrite>
+            </catalog_resource>
         </models>
+        <cache>
+            <types>
+                <catalog_models>
+                    <label>Catalog Model Loading</label>
+                    <description>Cache of Catalog Objects</description>
+                    <tags>catalog_model</tags>
+                </catalog_models>
+            </types>
+        </cache>
     </global>
     <default>
         <system>
             <cacheobserver>
+                <cache_lifetime>14400</cache_lifetime>
                 <enable_cms_pages>1</enable_cms_pages>
                 <enable_cms_blocks>1</enable_cms_blocks>
                 <enable_category_view>1</enable_category_view>
                 <enable_layer_view>1</enable_layer_view>
                 <enable_product_view>1</enable_product_view>
+                <enable_customer_group>0</enable_customer_group>
             </cacheobserver>
         </system>
     </default>
+    <cacheObserver>
+        <!-- Note: This empty node is required for correct functioning of the unit tests. -->
+    </cacheObserver>
+    <phpunit>
+        <suite>
+            <modules>
+                <Aligent_CacheObserver/>
+            </modules>
+        </suite>
+    </phpunit>
 </config>

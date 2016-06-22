@@ -1,0 +1,14 @@
+config_xml:
+  global: |
+    <global>
+      <blocks>
+        <cacheobserver_test>
+          <class>Aligent_CacheObserver_Test_Block</class>
+        </cacheobserver_test>
+      </blocks>
+      <models>
+        <cacheobserver_test>
+          <class>Aligent_CacheObserver_Test_Model</class>
+        </cacheobserver_test>
+      </models>
+    </global>
