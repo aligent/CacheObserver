@@ -2,7 +2,7 @@
 /**
  * Config.php
  *
- * @category  Aligent
+ * @category  Mage
  * @package   Aligent_CacheObserver
  * @author    Luke Mills <luke@aligent.com.au>
  * @copyright 2015 Aligent Consulting.

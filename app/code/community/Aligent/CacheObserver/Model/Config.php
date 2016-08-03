@@ -1,19 +1,8 @@
 <?php
 /**
- * Config.php
- *
- * @category  Aligent
- * @package   Aligent_CacheObserver
- * @author    Luke Mills <luke@aligent.com.au>
- * @copyright 2015 Aligent Consulting.
- * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- * @link      http://www.aligent.com.au/
- */
-
-/**
  * Aligent_CacheObserver_Model_Config
  *
- * @category  Aligent
+ * @category  Mage
  * @package   Aligent_CacheObserver
  * @author    Luke Mills <luke@aligent.com.au>
  * @copyright 2015 Aligent Consulting.
@@ -22,20 +11,26 @@
  */
 class Aligent_CacheObserver_Model_Config
 {
-
+    /**
+     * Path to XML config settings
+     * @var string
+     */
     const XML_PATH_CACHEOBSERVER = 'cacheObserver';
 
+    /**
+     * @var array
+     */
     protected $_observersIndexedByClassName = null;
 
     /**
      * Returns an array of callable observers for the given block instance.
      * Note, this returns all the observers defined for any class or interface in the block instance's ancestry.
      *
-     * @param $blockInstance
-     *
+     * @param  Mage_Core_Block_Abstract $blockInstance
      * @return array
      */
-    public function getObserversByBlockInstance($blockInstance) {
+    public function getObserversByBlockInstance($blockInstance)
+    {
         $ancestry = array_merge(
             array(get_class($blockInstance)),
             class_parents($blockInstance),
@@ -53,10 +48,8 @@ class Aligent_CacheObserver_Model_Config
      * Note, this returns the observers for the class as defined in the config.xml. This method does not return
      * observers that were defined for any parent class or interface.
      *
-     * @param string $className
-     *
+     * @param  string $className
      * @return array
-     *
      * @throws Exception when the config can't be read.
      */
     public function getObserversByClassName($className)
@@ -68,6 +61,9 @@ class Aligent_CacheObserver_Model_Config
         return $observers[$className];
     }
 
+    /**
+     * @return array
+     */
     protected function _getObserversIndexedByClass()
     {
         if (is_null($observers = &$this->_observersIndexedByClass)) {
@@ -91,6 +87,10 @@ class Aligent_CacheObserver_Model_Config
         return $observers;
     }
 
+    /**
+     * @param  Mage_Core_Model_Config_Element $node
+     * @return array
+     */
     protected function _configNodeToObserver(Mage_Core_Model_Config_Element $node)
     {
         $this->_validateObserverNode($node);

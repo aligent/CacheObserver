@@ -2,7 +2,7 @@
 /**
  * Aligent_CacheObserver_Test_Model_Observer
  *
- * @category  Aligent
+ * @category  Mage
  * @package   Aligent_CacheObserver
  * @author    Luke Mills <luke@aligent.com.au>
  * @copyright 2015 Aligent Consulting.
@@ -11,14 +11,14 @@
  */
 class Aligent_CacheObserver_Test_Model_Observer extends EcomDev_PHPUnit_Test_Case
 {
-
     protected function setUp()
     {
         parent::setUp();
-        $sessionMock = $this->getModelMockBuilder('core/session')
-                            ->disableOriginalConstructor() // This one removes session_start and other methods usage
-                            ->setMethods(null) // Enables original methods usage, because by default it overrides all methods
-                            ->getMock();
+        $sessionMock = $this
+            ->getModelMockBuilder('core/session')
+            ->disableOriginalConstructor() // This one removes session_start and other methods usage
+            ->setMethods(null)             // Enables original methods usage, because by default it overrides all methods
+            ->getMock();
         $this->replaceByMock('singleton', 'core/session', $sessionMock);
     }
 
@@ -52,7 +52,7 @@ class Aligent_CacheObserver_Test_Model_Observer extends EcomDev_PHPUnit_Test_Cas
 
         $testObserver = $this->getMock('StdClass', array('testFoo'), array(), 'Aligent_CacheObserver_Test_Model_Observer_Foo');
         $testObserver->expects($this->never())
-                     ->method('testFoo');
+            ->method('testFoo');
 
         $this->replaceByMock('model', 'cacheobserver_test/observer_foo', $testObserver);
 

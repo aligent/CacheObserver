@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<!-- 
+<!--
 /**
- * @category   Aligent
+ * @category   Mage
  * @package    Aligent_CacheObserver
  * @author     ModuleCreator
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
@@ -86,7 +86,7 @@
     <phpunit>
         <suite>
             <modules>
-                <Aligent_CacheObserver/>
+                <Aligent_CacheObserver />
             </modules>
         </suite>
     </phpunit>
