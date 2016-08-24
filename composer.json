@@ -15,7 +15,7 @@
     }
   ],
   "require": {
-    "magento-hackathon/magento-composer-installer": "~2.0.0"
+    "magento-hackathon/magento-composer-installer": "~2.0"
   },
   "require-dev": {
     "phpunit/phpunit": "4.1.x-dev",
