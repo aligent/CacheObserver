@@ -121,7 +121,7 @@ class Aligent_CacheObserver_Model_Observer
             ) {
                 $iProductId = $this->_getProductId();
                 $vAlias = $block->getNameInLayout();
-                $vReviewToolBarKey=$this->getReviewToolBarKey();
+                $vReviewToolBarKey=$this->_getReviewToolBarKey();
                 $block->setData('cache_lifetime', $this->iCacheLifetime);
                 $block->setData(
                     'cache_key',
@@ -157,7 +157,7 @@ class Aligent_CacheObserver_Model_Observer
                 );
             } elseif ($block instanceof Mage_Catalog_Block_Product_View && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $vAlias = $block->getNameInLayout();
-                $vReviewToolBarKey=$this->getReviewToolBarKey();
+                $vReviewToolBarKey=$this->_getReviewToolBarKey();
                 $vTemplate = $block->getTemplate();
                 $sCachekey = $this->_generateProductCacheKey($observer,Mage::registry('current_product'),$vReviewToolBarKey,$vAlias,$vTemplate);
                 $aCacheTags = $this->_generateProductCacheTags($observer,Mage::registry('current_product'));
@@ -310,6 +310,20 @@ class Aligent_CacheObserver_Model_Observer
         }
         return $this;
     }
+
+
+    /**
+     * Fetches the current product id from two possible registry keys.
+     *
+     * @return mixed
+     */
+    protected function _getProductId() {
+        if (Mage::registry('orig_product_id')) {
+            return Mage::registry('orig_product_id');
+        }
+        return Mage::app()->getRequest()->getParam('id');
+    }
+
 
     /**
      * Creates a Key from the request param. This key is used for creating unique Cache Key, and Cache Tag
