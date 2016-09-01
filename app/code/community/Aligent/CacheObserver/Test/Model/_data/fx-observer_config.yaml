@@ -1,4 +1,18 @@
 config_xml:
+  test: |
+      <test>
+        <events>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <cacheobserver2>
+                        <type>singleton</type>
+                        <class>cacheobserver/observer2</class>
+                        <method>customBlockCache</method>
+                    </cacheobserver2>
+                </observers>
+            </core_block_abstract_to_html_before>
+        </events>
+      </test>
   cacheObserver: |
       <cacheObserver>
           <cacheobserver_default>
