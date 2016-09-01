@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/aligent/CacheObserver.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
 
 Aligent CacheObserver Extension
 ===============================
