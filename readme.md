@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/aligent/CacheObserver.svg)](https://travis-ci.org/laravel/framework)
+
 Aligent CacheObserver Extension
 ===============================
 Magento extension to add cache keys and tags to blocks that are not cached by default.

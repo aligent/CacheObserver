@@ -23,6 +23,6 @@ script:
 notifications:
   email:
     recipients:
-      - zain@aligent.com.au
+      - cacheobserver@aligent.com.au
     on_success: always
     on_failure: always
