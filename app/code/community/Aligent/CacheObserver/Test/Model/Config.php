@@ -60,6 +60,7 @@ class Aligent_CacheObserver_Test_Model_Config extends EcomDev_PHPUnit_Test_Case
     public function testGetObserversByClassName($className)
     {
         $config    = $this->_config;
+        /** @var Aligent_CacheObserver_Model_Config $config */
         $observers = $config->getObserversByClassName($className);
         $this->assertTrue(is_array($observers), 'Expect observers to be an array.');
         $expectedObservers = $this->expected($className)->getObservers();
