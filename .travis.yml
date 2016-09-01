@@ -8,9 +8,9 @@ php:
   #- hhvm
 env:
   global:
-    - MAGENTO_DB_ALLOWSAME=1
-    - SKIP_CLEANUP=1
-    - TEST_BASEDIR=.modman/CacheObserver/app/code/community/Aligent/CacheObserver/Test
+#    - MAGENTO_DB_ALLOWSAME=1
+#    - SKIP_CLEANUP=1
+#    - TEST_BASEDIR=.modman/CacheObserver/app/code/community/Aligent/CacheObserver/Test
   matrix:
     #- MAGENTO_VERSION=magento-mirror-1.9.2.2
     #- MAGENTO_VERSION=magento-mirror-1.9.1.1
@@ -19,7 +19,7 @@ env:
     #- MAGENTO_VERSION=magento-mirror-1.8.0.0
     - MAGENTO_VERSION=magento-mirror-1.7.0.2
 script:
-  - curl -sSL https://raw.githubusercontent.com/AOEpeople/MageTestStand/plain_phpunit/setup.sh | bash
+  - curl -sSL https://raw.githubusercontent.com/AOEpeople/MageTestStand/master/setup.sh | bash
 notifications:
   email:
     recipients:
