@@ -15,26 +15,34 @@ class Aligent_CacheObserver_Model_Observer
      * @var int
      */
     protected $iCacheLifetime;
-
+    protected $iCacheLifetimeFactors = [];
+    protected $config = [];
     /**
      * Sets the cache lifetime from store configuration
      */
     public function __construct()
     {
-        $this->iCacheLifetime = Mage::getStoreConfig(self::CACHE_LIFETIME_CONFIG);
+        $this->_initConfig();
+        $this->iCacheLifetime = $this->_getConfig(self::CACHE_LIFETIME_CONFIG);
+        $this->iCacheLifetimeFactors = json_decode($this->_getConfig(self::CACHE_LIFETIMEFACTORS_CONFIG), true);
     }
 
     /**
      * XML configuration paths
      * @var string
      */
-    const CACHE_LIFETIME_CONFIG = 'system/cacheobserver/cache_lifetime';
-    const ENABLE_CMS_BLOCKS     = 'system/cacheobserver/enable_cms_blocks';
-    const ENABLE_CMS_PAGES      = 'system/cacheobserver/enable_cms_pages';
-    const ENABLE_CATEGORY_VIEW  = 'system/cacheobserver/enable_category_view';
-    const ENABLE_LAYER_VIEW     = 'system/cacheobserver/enable_layer_view';
-    const ENABLE_PRODUCT_VIEW   = 'system/cacheobserver/enable_product_view';
-    const ENABLE_CUSTOMER_GROUP = 'system/cacheobserver/enable_customer_group';
+    const CONFIG                       = 'system/cacheobserver';
+    const CACHE_LIFETIME_CONFIG        = 'cache_lifetime';
+    const CACHE_LIFETIMEFACTORS_CONFIG = 'cache_lifetime_factor_lookup';
+    const CACHE_FORMKEYPLACEHOLDER     = 'cache_formkey_placeholder';
+    const CACHE_NEVERBLOCKS            = 'cache_neverblocks';
+    const ENABLE_CMS_BLOCKS            = 'enable_cms_blocks';
+    const ENABLE_CMS_PAGES             = 'enable_cms_pages';
+    const ENABLE_CATEGORY_VIEW         = 'enable_category_view';
+    const ENABLE_LAYER_VIEW            = 'enable_layer_view';
+    const ENABLE_PRODUCT_VIEW          = 'enable_product_view';
+    const ENABLE_CUSTOMER_GROUP        = 'enable_customer_group';
+    const DEFAULT_FORM_KEY_PLACEHOLDER = '{{cache_form_key_placeholder}}'; // or Phoenix_VarnishCache_Model_Observer::FORM_KEY_PLACEHOLDER
 
     /**
      * Pager settings
@@ -60,6 +68,39 @@ class Aligent_CacheObserver_Model_Observer
     );
 
     /**
+     * Just load config in one go into a var
+     */
+    protected function _initConfig()
+    {
+        $this->config = Mage::getStoreConfig(self::CONFIG);
+        //some defaults:
+        if(! $this->_getConfig(self::CACHE_FORMKEYPLACEHOLDER)){
+            $this->config[self::CACHE_FORMKEYPLACEHOLDER] = self::DEFAULT_FORM_KEY_PLACEHOLDER;
+        }
+        $neverCacheBlocks = $this->_getConfig(self::CACHE_NEVERBLOCKS);
+        if($neverCacheBlocks) {
+            $blocks = explode(',', $neverCacheBlocks);
+            if($blocks) {
+                $blocks = array_map('trim', $blocks);
+                $this->_aNeverCacheBlocks = array_merge($this->_aNeverCacheBlocks, $blocks);
+            }
+        }
+    }
+
+    /**
+     * @param $key string
+     *
+     * @return mixed|null
+     */
+    protected function _getConfig($key)
+    {
+        if(isset($this->config[$key])) {
+            return $this->config[$key];
+        }
+
+        return null;
+    }
+    /**
      * @param  Varien_Event_Observer $observer
      * @return self
      */
@@ -79,8 +120,8 @@ class Aligent_CacheObserver_Model_Observer
             }
 
             $class = get_class($block);
-            if ($block instanceof Mage_Cms_Block_Block && $block->getBlockId() && Mage::getStoreConfig(self::ENABLE_CMS_BLOCKS)) {
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+            if ($block instanceof Mage_Cms_Block_Block && $block->getBlockId() && $this->_getConfig(self::ENABLE_CMS_BLOCKS)) {
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $key = 'cms_block_' . $block->getBlockId() . '_store_' . Mage::app()->getStore()->getId();
                 if(Mage::app()->getStore()->isCurrentlySecure()){
                     $key = "secure_" . $key;
@@ -99,8 +140,8 @@ class Aligent_CacheObserver_Model_Observer
             } elseif ($block instanceof Mage_Catalog_Block_Product_List_Toolbar) {
                 return $this;
 
-            } elseif ($block instanceof Mage_Cms_Block_Page && $block->getPage()->getIdentifier() && Mage::getStoreConfig(self::ENABLE_CMS_PAGES)) {
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+            } elseif ($block instanceof Mage_Cms_Block_Page && $block->getPage()->getIdentifier() && $this->_getConfig(self::ENABLE_CMS_PAGES)) {
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $key = 'cms_page_' . $block->getPage()->getIdentifier() . '_store_' . Mage::app()->getStore()->getId();
                 if(Mage::app()->getStore()->isCurrentlySecure()){
                     $key = 'secure_' . $key;
@@ -117,12 +158,12 @@ class Aligent_CacheObserver_Model_Observer
                     )
                 );
             } elseif (($block instanceof Mage_Review_Block_Product_View_List)
-                      && (Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW))
+                      && (Mage::$this->_getConfig(self::ENABLE_PRODUCT_VIEW))
             ) {
                 $iProductId = $this->_getProductId();
                 $vAlias = $block->getNameInLayout();
                 $vReviewToolBarKey=$this->_getReviewToolBarKey();
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData(
                     'cache_key',
                     'review_product_view_list_' . $iProductId . (Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout')
@@ -137,10 +178,10 @@ class Aligent_CacheObserver_Model_Observer
                         Mage_Catalog_Model_Product::CACHE_TAG . '_' . $iProductId
                     )
                 );
-            } elseif ($block instanceof Mage_Review_Block_Product_View && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
+            } elseif ($block instanceof Mage_Review_Block_Product_View && $this->_getConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $iProductId = Mage::registry('orig_product_id') ? Mage::registry('orig_product_id') : Mage::app()->getRequest()->getParam('id');
                 $vAlias = $block->getNameInLayout();
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData(
                     'cache_key',
                     'review_product_view_' . $iProductId . (Mage::getSingleton('customer/session')->isLoggedIn() ? '_loggedin' : '_loggedout')
@@ -155,22 +196,22 @@ class Aligent_CacheObserver_Model_Observer
                         Mage_Catalog_Model_Product::CACHE_TAG . '_' . $iProductId
                     )
                 );
-            } elseif ($block instanceof Mage_Catalog_Block_Product_View && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
+            } elseif ($block instanceof Mage_Catalog_Block_Product_View && $this->_getConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $vAlias = $block->getNameInLayout();
                 $vReviewToolBarKey=$this->_getReviewToolBarKey();
                 $vTemplate = $block->getTemplate();
                 $sCachekey = $this->_generateProductCacheKey($observer,Mage::registry('current_product'),$vReviewToolBarKey,$vAlias,$vTemplate);
                 $aCacheTags = $this->_generateProductCacheTags($observer,Mage::registry('current_product'));
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData('cache_key', $sCachekey);
                 $block->setData('cache_tags', $aCacheTags);
-            } elseif ($block instanceof Mage_Catalog_Block_Product_Price && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
+            } elseif ($block instanceof Mage_Catalog_Block_Product_Price && $this->_getConfig(self::ENABLE_PRODUCT_VIEW)) {
                 $iProductId = $block->getProduct() ? $block->getProduct()->getId() : Mage::app()->getRequest()->getParam('id');
                 $vAlias = $block->getNameInLayout();
                 $vTemplate = $block->getTemplate();
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $iLoggedIn = (int) Mage::getSingleton('customer/session')->isLoggedIn();
-                if ($iLoggedIn && Mage::getStoreConfig(self::ENABLE_CUSTOMER_GROUP)) {
+                if ($iLoggedIn && $this->_getConfig(self::ENABLE_CUSTOMER_GROUP)) {
                     $iLoggedIn = Mage::getSingleton('customer/session')->getCustomerGroupId();
                 }
                 $block->setData(
@@ -187,9 +228,9 @@ class Aligent_CacheObserver_Model_Observer
                         Mage_Catalog_Model_Product::CACHE_TAG . '_' . $iProductId
                     )
                 );
-            } elseif ($block instanceof Mage_Catalog_Block_Product_List && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW)) {
+            } elseif ($block instanceof Mage_Catalog_Block_Product_List && $this->_getConfig(self::ENABLE_CATEGORY_VIEW)) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData('cache_key', 'catalog_category_list_' . $sCachekey);
                 $block->setData(
                     'cache_tags',
@@ -202,7 +243,7 @@ class Aligent_CacheObserver_Model_Observer
                     )
                 );
             } elseif (($block instanceof Enterprise_TargetRule_Block_Catalog_Product_Item)
-                      && (Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW))
+                      && ($this->_getConfig(self::ENABLE_PRODUCT_VIEW))
             ) {
                 if (null !== $block->getProduct()) {
                     $iProductId = $block->getProduct()->getId();
@@ -210,7 +251,7 @@ class Aligent_CacheObserver_Model_Observer
                     $iProductId = $this->_getProductId();
                 }
 
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData(
                     'cache_tags',
                     array(
@@ -220,7 +261,7 @@ class Aligent_CacheObserver_Model_Observer
                         Mage_Catalog_Model_Product::CACHE_TAG . '_' . $iProductId
                     )
                 );
-            } elseif ($block instanceof Mage_Catalog_Block_Product_Abstract && Mage::getStoreConfig(self::ENABLE_PRODUCT_VIEW)) {
+            } elseif ($block instanceof Mage_Catalog_Block_Product_Abstract &&$this->_getConfig(self::ENABLE_PRODUCT_VIEW)) {
                 if ($block->getProduct() !== null) {
                     $iProductId = $block->getProduct()->getId();
                 } else {
@@ -229,16 +270,16 @@ class Aligent_CacheObserver_Model_Observer
 
                 $vPageParamKey = $this->_getParamKey(self::PAGE_VAR);
                 $vAlias = $block->getNameInLayout();
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData(
                     'cache_key',
                     'catalog_product_abstractview_product_' . $iProductId . '_' . $vPageParamKey
                     . (Mage::getSingleton('customer/session')->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomerGroupId() : '0')
                     . '_store_' . Mage::app()->getStore()->getId() . '_' . Mage::app()->getStore()->getCurrentCurrencyCode() . '_' . $vAlias
                 );
-            } elseif ($block instanceof Mage_Catalog_Block_Category_View && Mage::getStoreConfig(self::ENABLE_CATEGORY_VIEW)) {
+            } elseif ($block instanceof Mage_Catalog_Block_Category_View && $this->_getConfig(self::ENABLE_CATEGORY_VIEW)) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_view');
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData('cache_key', 'catalog_category_view_' . $sCachekey);
                 $block->setData(
                     'cache_tags',
@@ -251,10 +292,10 @@ class Aligent_CacheObserver_Model_Observer
                     )
                 );
             } elseif (($block instanceof Mage_Catalog_Block_Layer_View)
-                      && (Mage::getStoreConfig(self::ENABLE_LAYER_VIEW))
+                      && ($this->_getConfig(self::ENABLE_LAYER_VIEW))
             ) {
                 $sCachekey = $this->_generateCategoryCacheKey($observer, 'catalog_category_layered_nav_view');
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData('cache_key', 'catalog_category_layered_nav_view_' . $sCachekey);
                 $block->setData(
                     'cache_tags',
@@ -272,7 +313,7 @@ class Aligent_CacheObserver_Model_Observer
 
                 $block->setCacheKey(implode('_', array_values($aCacheKeyInfo)));
             } elseif (in_array($class, $this->cacheableBlocks)) {
-                $block->setData('cache_lifetime', $this->iCacheLifetime);
+                $block->setData('cache_lifetime', $this->iCacheLifetime * $this->_getLifeTimeFactorForClass($class));
                 $block->setData('cache_key', 'block_' . $class . '_store_' . Mage::app()->getStore()->getId());
                 $block->setData(
                     'cache_tags',
@@ -303,7 +344,7 @@ class Aligent_CacheObserver_Model_Observer
         if ($cacheData) {
             $sessionKey = $session->getFormKey();
             if (strpos($cacheData,$sessionKey) !== false) {
-                $cacheData = str_replace($sessionKey, Phoenix_VarnishCache_Model_Observer::FORM_KEY_PLACEHOLDER, $cacheData);
+                $cacheData = str_replace($sessionKey, $this->_getConfig(self::CACHE_FORMKEYPLACEHOLDER), $cacheData);
                 $tags = $block->getCacheTags();
                 Mage::app()->saveCache($cacheData, $cacheKey, $tags, $block->getCacheLifetime());
             }
@@ -398,6 +439,21 @@ class Aligent_CacheObserver_Model_Observer
     }
 
     /**
+     * Returns configured lifetime modifier for class
+     * @param $class string
+     *
+     * @return float
+     */
+    protected  function _getLifeTimeFactorForClass($class)
+    {
+        if(isset($this->iCacheLifetimeFactors[$class])) {
+            return (float) $this->iCacheLifetimeFactors[$class];
+        }
+
+        return 1.0;
+    }
+
+    /**
      * Create separate cached block for each product, viewed by each customer group (e.g. to cache different tax display rules)
      *
      * @param  Varien_Event_Observer      $observer
@@ -413,7 +469,7 @@ class Aligent_CacheObserver_Model_Observer
             return '';
         }
         $iLoggedIn = (int) Mage::getSingleton('customer/session')->isLoggedIn();
-        if ($iLoggedIn && Mage::getStoreConfig(self::ENABLE_CUSTOMER_GROUP)) {
+        if ($iLoggedIn && $this->_getConfig(self::ENABLE_CUSTOMER_GROUP)) {
             $iLoggedIn = Mage::getSingleton('customer/session')->getCustomerGroupId();
         }
         return 'catalog_product_page_' . $oProduct->getEntityId() . '_' . $iLoggedIn . '_store_' . Mage::app()->getStore()->getId()
