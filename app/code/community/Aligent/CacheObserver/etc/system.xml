@@ -26,6 +26,32 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </cache_lifetime>
+                        <cache_lifetime_factor_lookup>
+                            <label>Custom cache factors</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>json encoded table of class name:factor pairs. Is multiplied by base lifetime. Used to modify the base cache lifetime for target blocks. ex: `{"Block_Name": 0.5}`</comment>
+                        </cache_lifetime_factor_lookup>
+                        <cache_formkey_placeholder>
+                            <label>FPC formkey placeholder</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </cache_formkey_placeholder>
+                        <cache_neverblocks>
+                            <label>Blocks to bypass caching</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Comma separated list of blocks to bypass</comment>
+                        </cache_neverblocks>
                         <enable_cms_pages translate="label comment">
                             <label>Enable Caching of CMS Pages</label>
                             <frontend_type>select</frontend_type>
